@@ -3,19 +3,27 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import OptionChoose from './optionChoose';
 import axios from 'axios'
 
-const URL = 'http://localhost:3003/api/todos'
 export default class ChooseSimples extends Component {
 
     constructor(props) {
         super(props)
-        this.state = { tarefas: [] }
+        this.state = {
+            lista: props.lista || [],
+            url: props.url || '',
+            id: props.id || '_id',
+            descricao: props.descricao || 'description'
+        }
         this.refresh()
     }
     
     refresh() {
-        axios.get(URL).then(
-            resp => this.setState({ tarefas: resp.data })
-        )
+        if(this.state.url !== '') {
+            axios.get(this.state.url).then(
+                resp => {
+                    this.setState({ lista: resp.data.dados.registro })
+                }
+            )
+        }
     }
     
 
@@ -24,7 +32,8 @@ export default class ChooseSimples extends Component {
             <div className="form-group">
                 <label>Select list:</label>
                 <select className="form-control" id="sel1">
-                    <OptionChoose lista={this.state.tarefas}/>
+                    <OptionChoose lista={this.state.lista} id={this.state.id}
+                        descricao={this.state.descricao}/>
                 </select>
             </div>
         )
